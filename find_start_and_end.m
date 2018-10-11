@@ -6,11 +6,11 @@ function [start_vectors,end_vectors] = find_start_and_end(worksheet_address)
 %   end_vector of the same size.
 start_vectors = zeros(3,1,3);
 end_vectors = zeros(3,1,3);
-colour_thershold = 80;
+colour_thershold = .8;
 %% Process given image to find the related size and color of starting and ending blobs
 imWork = imread(worksheet_address);
 %dimensions of image
-[rows,columns] = size(imWork);
+[rows,columns] = size(imWork(:,:,1));
 %the desired starting and ending points will be in the top 20% of the
 %picture
 img_cutoff = rows*.25;
@@ -19,14 +19,31 @@ worksheet = imWork(img_cutoff:end,:,:);
 start_end_shapes = imWork(1:img_cutoff,:,:);
 %get all green shapes and red shapes from worksheet
 % then clear all noise pixels , under thershold
-green_shapes_w = worksheet(:,:,1) > colour_thershold;
-red_shapes_w = worksheet(:,:,2) > colour_thershold;
+Chrome_Img = Chromactiy( worksheet , colour_thershold );
 %get all blobs dectected to work out what is small and what is large
-green_blobs = iblobs(green_shapes_w,'area',[100,99999999]);
-red_blobs = iblobs(red_shapes_w,'area',[100,99999999]);
+green_blobs = iblobs(Chrome_Img(:,:,1),'area',[50,100000]);
+red_blobs = iblobs(Chrome_Img(:,:,2),'area',[50,100000]);
 %remove the background elements from blobs
-green_blobs = green_blobs(1:end-1);
-red_blobs = red_blobs(1:end-1);
-mean_size = mean([mean(green_blobs.area),mean(red_blobs.area)])
+green_blobs = green_blobs;
+red_blobs = red_blobs;
+mean_size_r = mean(red_blobs.area)*.8
+mean_size_g = mean(green_blobs.area)*.8
+
+%% test section A - check that shapes are only detected
+idisp(Chrome_Img(:,:,1))
+green_blobs.plot_box('b')
+disp('contiue to red')
+pause;
+idisp(Chrome_Img(:,:,2))
+red_blobs.plot_box('r')
+disp('continue to size detection?')
+pause;
+%detect only large sized shapes
+idisp(Chrome_Img(:,:,1))
+green_blobs(green_blobs.area >  mean_size_g).plot_box('b')
+disp('contiue to red')
+pause;
+idisp(Chrome_Img(:,:,2))
+red_blobs(red_blobs.area > mean_size_r).plot_box('r')
 end
 
