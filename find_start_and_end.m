@@ -28,10 +28,11 @@ green_blobs = green_blobs;
 red_blobs = red_blobs;
 mean_size_r = mean(red_blobs.area)*.8
 mean_size_g = mean(green_blobs.area)*.8
+mean_size = (mean_size_r+mean_size_g)/2;
 
 %% test section A - check that shapes are only detected
 idisp(Chrome_Img(:,:,1))
-green_blobs.plot_box('b')
+green_blobs.plot_box('g')
 disp('contiue to red')
 pause;
 idisp(Chrome_Img(:,:,2))
@@ -40,10 +41,26 @@ disp('continue to size detection?')
 pause;
 %detect only large sized shapes
 idisp(Chrome_Img(:,:,1))
-green_blobs(green_blobs.area >  mean_size_g).plot_box('b')
+green_blobs(green_blobs.area >  mean_size).plot_box('g')
 disp('contiue to red')
 pause;
 idisp(Chrome_Img(:,:,2))
-red_blobs(red_blobs.area > mean_size_r).plot_box('r')
+red_blobs(red_blobs.area > mean_size).plot_box('r')
+disp('contiue to desired shapes')
+pause;
+%% find similar shapes and store choices
+Chrome_start_shapes = Chromactiy( start_end_shapes , colour_thershold );
+desired.green = iblobs(Chrome_start_shapes(:,:,1),'area',[50,100000],'boundary','connect',8);  
+desired.red = iblobs(Chrome_start_shapes(:,:,2),'area',[50,100000],'boundary','connect',8);
+idisp(Chrome_start_shapes(:,:,1))
+desired.green.plot_box('g')
+desired.red.plot_box('r')
+disp('contiue with shape dectection')
+pause;
+desired.shapeG.large = desired.green(desired.green.area >= mean_size);
+desired.shapeR.large = desired.red(desired.red.area >= mean_size);
+idisp(Chrome_start_shapes(:,:,1))
+desired.shapeG.large.plot_box('g')
+desired.shapeR.large.plot_box('r')
 end
 
