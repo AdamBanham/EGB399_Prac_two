@@ -86,10 +86,10 @@ sort_uc = sort(desired.start.uc);
 for idx = 1:length(desired.start)
    shape = desired.start(desired.start.uc == sort_uc(shape_counter));
    idisp(Chrome_start_shapes);
-   fprintf('start point shape:%d , ',shape_counter)
+   fprintf('start shape:%d , ',shape_counter)
    for red = desired.red(desired.red.uc < columns*.5)
     if (shape.uc == red.uc)
-        fprintf('colour : red, ')
+        fprintf('colour : red,')
     end
    end
    for green = desired.green(desired.green.uc < columns*.5)
@@ -98,41 +98,13 @@ for idx = 1:length(desired.start)
        end
    end
    if shape.area > mean_size
-      fprintf('size : large, ')
-   else
-       fprintf('size : small,')
+      fprint 
    end
-   
    fprintf('\n')
    shape_counter = shape_counter+1;
    shape.plot_box('y')
    pause;
 end
-sort_uc = sort(desired.end.uc);
-for idx = 1:length(desired.start)
-   shape = desired.end(desired.end.uc == sort_uc(shape_counter-3));
-   idisp(Chrome_start_shapes);
-   fprintf('finish point shape:%d , ',shape_counter-3)
-   for red = desired.red(desired.red.uc > columns*.5)
-    if (shape.uc == red.uc)
-        fprintf('colour : red, ')
-    end
-   end
-   for green = desired.green(desired.green.uc > columns*.5)
-       if (shape.uc == green.uc)
-        fprintf('colour : green, ')
-       end
-   end
-   if shape.area > mean_size
-      fprintf('size : large, ')
-   else
-       fprintf('size : small,')
-   end
-   
-   fprintf('\n')
-   shape_counter = shape_counter+1;
-   shape.plot_box('y')
-   pause;
-end
+
 end
 
