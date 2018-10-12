@@ -6,7 +6,7 @@ function [start_vectors,end_vectors] = find_start_and_end(worksheet_address)
 %   end_vector of the same size.
 start_vectors = zeros(3,1,3);
 end_vectors = zeros(3,1,3);
-colour_thershold = .8;
+colour_thershold = .7;
 %% Process given image to find the related size and color of starting and ending blobs
 imWork = imread(worksheet_address);
 %dimensions of image
@@ -21,14 +21,14 @@ start_end_shapes = imWork(1:img_cutoff,:,:);
 % then clear all noise pixels , under thershold
 Chrome_Img = Chromactiy( worksheet , colour_thershold );
 %get all blobs dectected to work out what is small and what is large
-green_blobs = iblobs(Chrome_Img(:,:,1),'area',[50,100000]);
-red_blobs = iblobs(Chrome_Img(:,:,2),'area',[50,100000]);
+green_blobs = iblobs(Chrome_Img(:,:,1)>colour_thershold,'area',[50,10000],'connect',8);
+red_blobs = iblobs(Chrome_Img(:,:,2)>colour_thershold,'area',[50,10000],'connect',8);
 %remove the background elements from blobs
-green_blobs = green_blobs;
-red_blobs = red_blobs;
-mean_size_r = mean(red_blobs.area)*.8
-mean_size_g = mean(green_blobs.area)*.8
-mean_size = (mean_size_r+mean_size_g)/2;
+% green_blobs = green_blobs;
+% red_blobs = red_blobs;
+mean_size_r = mean(red_blobs.area);
+mean_size_g = mean(green_blobs.area);
+mean_size = ((mean_size_r+mean_size_g)/2)*.8;
 
 %% test section A - check that shapes are only detected
 idisp(Chrome_Img(:,:,1))
@@ -50,25 +50,61 @@ disp('contiue to desired shapes')
 pause;
 %% find similar shapes and store choices
 Chrome_start_shapes = Chromactiy( start_end_shapes , colour_thershold );
-desired.green = iblobs(Chrome_start_shapes(:,:,1),'area',[50,100000],'boundary','connect',8);  
-desired.red = iblobs(Chrome_start_shapes(:,:,2),'area',[50,100000],'boundary','connect',8);
-idisp(Chrome_start_shapes(:,:,1))
+desired.green = iblobs(Chrome_start_shapes(:,:,2)>colour_thershold,'boundary','connect',8,'area',[50,10000]);  
+desired.red = iblobs(Chrome_start_shapes(:,:,1)>colour_thershold,'boundary','connect',8,'area',[50,10000]);
+idisp(Chrome_start_shapes(:,:,1));
 desired.green.plot_box('g')
 desired.red.plot_box('r')
 disp('contiue with shape dectection')
 pause;
 desired.shapeG.large = desired.green(desired.green.area >= mean_size);
 desired.shapeR.large = desired.red(desired.red.area >= mean_size);
-idisp(Chrome_start_shapes(:,:,1))
-desired.shapeG.large.plot_box('g')
-desired.shapeR.large.plot_box('r')
+idisp(Chrome_start_shapes(:,:,1));
+desired.shapeG.large.plot_box('g');
+desired.shapeR.large.plot_box('r');
 
 %% spilt into start and end blobs 
 
-desired.start.red = desired.red(desired.green.uc < columns*.5)
-desired.start.green = desired.green(desired.green.uc < columns*.5)'
-desired.end.green = desired.green(desired.green.uv < columns*.5)
+desired.start = desired.red(desired.red.uc < columns*.5);
+temp_regions = desired.green(desired.green.uc < columns*.5);
+desired.start(end+1:end+length(temp_regions)) = temp_regions;
 
-des
+desired.end = desired.green(desired.green.uc > columns*.5);
+temp_regions = desired.red(desired.red.uc > columns*.5);
+desired.end(end+1:end+length(temp_regions)) = temp_regions;
+
+idisp(Chrome_start_shapes);
+desired.start.plot_box('r');
+desired.start(desired.start.uc == min(desired.start.uc)).plot_box('y');
+
+desired.end.plot_box('g');
+desired.end(desired.end.uc == min(desired.end.uc)).plot_box('y');
+
+%% split out table for starting and ending vectors
+shape_counter = 1;
+sort_uc = sort(desired.start.uc);
+for idx = 1:length(desired.start)
+   shape = desired.start(desired.start.uc == sort_uc(shape_counter));
+   idisp(Chrome_start_shapes);
+   fprintf('start shape:%d , ',shape_counter)
+   for red = desired.red(desired.red.uc < columns*.5)
+    if (shape.uc == red.uc)
+        fprintf('colour : red,')
+    end
+   end
+   for green = desired.green(desired.green.uc < columns*.5)
+       if (shape.uc == green.uc)
+        fprintf('colour : green, ')
+       end
+   end
+   if shape.area > mean_size
+      fprint 
+   end
+   fprintf('\n')
+   shape_counter = shape_counter+1;
+   shape.plot_box('y')
+   pause;
+end
+
 end
 
