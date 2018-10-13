@@ -1,0 +1,15 @@
+function [ Shape ] = Circularity( blob )
+%CIRCULARITY performs circularity testing to find out if a blob is a
+%triangle , square or circle 
+%   takes a region feature from iblobs function
+%   outputs a Shapes id with values of 1 to 3 (circle , square , triangle)
+
+if blob.circularity > .95
+    Shape = 1;
+end
+if (blob.circularity < .9 && blob.circularity > .71)
+    Shape = 2;
+end
+if blob.circularity < .71 && blob.circularity > .6
+    Shape = 3;
+end
