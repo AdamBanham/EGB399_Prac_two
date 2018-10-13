@@ -7,6 +7,9 @@ function [start_vectors,end_vectors] = find_start_and_end(worksheet_address)
 start_vectors = zeros(3,1,3);
 end_vectors = zeros(3,1,3);
 colour_thershold = .7;
+robot_frame_x = 100;
+robot_frame_y = 290;
+block_height = 30;
 %% Process given image to find the related size and color of starting and ending blobs
 imWork = imread(worksheet_address);
 %dimensions of image
@@ -115,22 +118,23 @@ H = calc_hom(blue_blobs);
 shape_counter = 1;
 sort_uc = sort(desired.start.uc);
 for idx = 1:length(desired.start)
+   disp('*------------------------------*')
    shape = desired.start(desired.start.uc == sort_uc(shape_counter));
    idisp(start_end_shapes);
-   fprintf('start point shape:%d \n',shape_counter)
+   fprintf('start point shape: %d\n',shape_counter)
    %print the shape
    switch (Circularity(shape))
        case 1
-           fprintf('shape : circle, ')
+           fprintf('SHAPE : circle\n')
        case 2
-           fprintf('shape : square, ')
+           fprintf('SHAPE : square\n')
        case 3
-           fprintf('shape : triangle, ')
+           fprintf('SHAPE : triangle\n')
    end
    %print the colour
    for red = desired.red(desired.red.uc < columns*.5)
        if (shape.uc == red.uc)
-            fprintf('colour : red, ')
+            fprintf('COLOUR : red\n')
             %find the corsponding worksheet shape
             for work_shape = red_blobs
                 if abs(work_shape.area - shape.area) < 2000
@@ -143,7 +147,7 @@ for idx = 1:length(desired.start)
    end
    for green = desired.green(desired.green.uc < columns*.5)
        if (shape.uc == green.uc)
-           fprintf('colour : green, ')
+           fprintf('COLOUR : green\n')
            %find the corsponding worksheet shape
            for work_shape = green_blobs
                 if abs(work_shape.area - shape.area) < 2000
@@ -156,40 +160,49 @@ for idx = 1:length(desired.start)
    end
    %print the size
    if shape.area > mean_size(Circularity(shape))
-      fprintf('size : large ')
+      fprintf('SIZE : large\n')
    else
-       fprintf('size : small,')
+       fprintf('SIZE : small\n')
    end
    %print the real world coordinates
    p = [worksheet_shape.uc worksheet_shape.vc];
    q = homtrans(H,p');
-   fprintf('and is located at (x,y) : %fmm , %fmm', q(1) , q(2))
+   fprintf('real world coordinates (x,y) : %fmm , %fmm', q(1) , q(2))
    %plot box and move to next line
    fprintf('\n')
-   shape_counter = shape_counter+1;
    shape.plot_box('y')
+   %store in end vector with respect to the robot work frame
+   start_vectors(1,1,shape_counter) = q(1)-robot_frame_x;
+   start_vectors(2,1,shape_counter) = q(2)-robot_frame_y;
+   start_vectors(3,1,shape_counter) = block_height;
+   fprintf('In relation to robot frame, real world coordinates (x,y) : %fmm , %fmm\n', ...
+       start_vectors(1,1,shape_counter),...
+       start_vectors(2,1,shape_counter) )  
+   disp('*------------------------------*')
    pause;
+   shape_counter = shape_counter+1;
 end
 
 %% Destination points
 sort_uc = sort(desired.end.uc);
 for idx = 1:length(desired.start)
+   disp('*------------------------------*')
    shape = desired.end(desired.end.uc == sort_uc(shape_counter-3));
    idisp(start_end_shapes);
-   fprintf('finish point shape:%d \n',shape_counter-3)
+   fprintf('finish point shape: %d \n',shape_counter-3)
    %print the shape
    switch (Circularity(shape))
        case 1
-           fprintf('shape : circle, ')
+           fprintf('SHAPE : circle\n')
        case 2
-           fprintf('shape : square, ')
+           fprintf('SHAPE : square\n')
        case 3
-           fprintf('shape : circle, ')
+           fprintf('SHAPE : circle\n')
    end   
    %print the colour
    for red = desired.red(desired.red.uc > columns*.5)
        if (shape.uc == red.uc)
-            fprintf('colour : red, ')
+            fprintf('COLOUR : red\n')
             %find the corsponding worksheet shape
             for work_shape = red_blobs
                 if abs(work_shape.area - shape.area) < 2000
@@ -202,7 +215,7 @@ for idx = 1:length(desired.start)
    end
    for green = desired.green(desired.green.uc > columns*.5)
        if (shape.uc == green.uc)
-           fprintf('colour : green, ')
+           fprintf('COLOUR : green\n')
            %find the corsponding worksheet shape
            for work_shape = green_blobs
                 if abs(work_shape.area - shape.area) < 2000
@@ -215,19 +228,26 @@ for idx = 1:length(desired.start)
    end
    %print the size
    if shape.area > mean_size(Circularity(shape))
-      fprintf('size : large, ')
+      fprintf('SIZE : large\n')
    else
-       fprintf('size : small,')
+       fprintf('SIZE : small\n')
    end
    %print the real world coordinates
    p = [worksheet_shape.uc worksheet_shape.vc];
    q = homtrans(H,p');
-   fprintf('and is located at (x,y) : %fmm , %fmm', q(1) , q(2))
+   fprintf('real world coordinates (x,y) : %fmm , %fmm', q(1) , q(2))
    %plot box and move to next line
    fprintf('\n')
-   shape_counter = shape_counter+1;
    shape.plot_box('y')
    %store in end vector with respect to the robot work frame
+   end_vectors(1,1,shape_counter-3) = q(1)-robot_frame_x;
+   end_vectors(2,1,shape_counter-3) = q(2)-robot_frame_y;
+   end_vectors(3,1,shape_counter-3) = block_height;
+   fprintf('In relation to robot frame, real world coordinates (x,y) : %fmm , %fmm\n', ...
+       end_vectors(1,1,shape_counter-3),...
+       end_vectors(2,1,shape_counter-3) ) 
+   disp('*------------------------------*')
+   shape_counter = shape_counter+1;
    pause;
 end
 end

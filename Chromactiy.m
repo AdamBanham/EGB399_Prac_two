@@ -1,4 +1,4 @@
-function [ chromacity ] = Chromactiy( ImageArray , colourThershold )
+function [ chromacity ] = Chromactiy( ImageArray , ~ )
 %CHROMACTIY performs chromacity checks on colour image array
 %   converts a given n by m by 3 colour martic of a image to
 %   and returns the chromacity of each RGB level
