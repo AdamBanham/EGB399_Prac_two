@@ -111,12 +111,13 @@ blue_blobs = iblobs(Chrome_Img(:,:,3)>colour_thershold,'boundary','area',[50,100
 %work out homography matrix
 H = calc_hom(blue_blobs);
 %% Create table results about desired start and end shapes
+%Start points
 shape_counter = 1;
 sort_uc = sort(desired.start.uc);
 for idx = 1:length(desired.start)
    shape = desired.start(desired.start.uc == sort_uc(shape_counter));
    idisp(start_end_shapes);
-   fprintf('start point shape:%d , ',shape_counter)
+   fprintf('start point shape:%d \n',shape_counter)
    %print the shape
    switch (Circularity(shape))
        case 1
@@ -128,48 +129,54 @@ for idx = 1:length(desired.start)
    end
    %print the colour
    for red = desired.red(desired.red.uc < columns*.5)
-    if (shape.uc == red.uc)
-        fprintf('colour : red, ')
-        for work_shape = red_blobs
-            if abs(work_shape - shape.area) < 100
-                if Circularity(work_shape) == Circularity(shape)
-                     worksheet_shape = work_shape;
+       if (shape.uc == red.uc)
+            fprintf('colour : red, ')
+            %find the corsponding worksheet shape
+            for work_shape = red_blobs
+                if abs(work_shape.area - shape.area) < 2000
+                    if Circularity(work_shape) == Circularity(shape)
+                         worksheet_shape = work_shape;
+                    end
                 end
-            end
-       end
-    end
+           end
+        end
    end
    for green = desired.green(desired.green.uc < columns*.5)
        if (shape.uc == green.uc)
-        fprintf('colour : green, ')
-       for work_shape = green_blobs
-            if abs(work_shape - shape.area) < 100
-                if Circularity(work_shape) == Circularity(shape)
-                     worksheet_shape = work_shape;
+           fprintf('colour : green, ')
+           %find the corsponding worksheet shape
+           for work_shape = green_blobs
+                if abs(work_shape.area - shape.area) < 2000
+                    if Circularity(work_shape) == Circularity(shape)
+                         worksheet_shape = work_shape;
+                    end
                 end
-            end
-       end
+           end
        end
    end
    %print the size
    if shape.area > mean_size(Circularity(shape))
-      fprintf('size : large, ')
+      fprintf('size : large ')
    else
        fprintf('size : small,')
    end
    %print the real world coordinates
-   
+   p = [worksheet_shape.uc worksheet_shape.vc];
+   q = homtrans(H,p');
+   fprintf('and is located at (x,y) : %fmm , %fmm', q(1) , q(2))
    %plot box and move to next line
    fprintf('\n')
    shape_counter = shape_counter+1;
    shape.plot_box('y')
    pause;
 end
+
+%% Destination points
 sort_uc = sort(desired.end.uc);
 for idx = 1:length(desired.start)
    shape = desired.end(desired.end.uc == sort_uc(shape_counter-3));
    idisp(start_end_shapes);
-   fprintf('finish point shape:%d , ',shape_counter-3)
+   fprintf('finish point shape:%d \n',shape_counter-3)
    %print the shape
    switch (Circularity(shape))
        case 1
@@ -181,14 +188,29 @@ for idx = 1:length(desired.start)
    end   
    %print the colour
    for red = desired.red(desired.red.uc > columns*.5)
-    if (shape.uc == red.uc)
-        fprintf('colour : red, ')
-        
-    end
+       if (shape.uc == red.uc)
+            fprintf('colour : red, ')
+            %find the corsponding worksheet shape
+            for work_shape = red_blobs
+                if abs(work_shape.area - shape.area) < 2000
+                    if Circularity(work_shape) == Circularity(shape)
+                         worksheet_shape = work_shape;
+                    end
+                end
+            end        
+       end
    end
    for green = desired.green(desired.green.uc > columns*.5)
        if (shape.uc == green.uc)
-        fprintf('colour : green, ')
+           fprintf('colour : green, ')
+           %find the corsponding worksheet shape
+           for work_shape = green_blobs
+                if abs(work_shape.area - shape.area) < 2000
+                    if Circularity(work_shape) == Circularity(shape)
+                         worksheet_shape = work_shape;
+                    end
+                end
+           end
        end
    end
    %print the size
@@ -197,11 +219,15 @@ for idx = 1:length(desired.start)
    else
        fprintf('size : small,')
    end
-   %print real world coordinates of shape
+   %print the real world coordinates
+   p = [worksheet_shape.uc worksheet_shape.vc];
+   q = homtrans(H,p');
+   fprintf('and is located at (x,y) : %fmm , %fmm', q(1) , q(2))
    %plot box and move to next line
    fprintf('\n')
    shape_counter = shape_counter+1;
    shape.plot_box('y')
+   %store in end vector with respect to the robot work frame
    pause;
 end
 end
