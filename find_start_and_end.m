@@ -103,6 +103,13 @@ desired.end(end+1:end+length(temp_regions)) = temp_regions;
 % disp('showing start 1 matched with end 1')
 % disp('continue to table?')
 % pause;
+
+%% Create Homography matrix to find real world measurements
+%find blue blobs on the worksheet
+blue_blobs = iblobs(Chrome_Img(:,:,3)>colour_thershold,'boundary','area',[50,10000]);
+% idisp(worksheet)
+%work out homography matrix
+H = calc_hom(blue_blobs);
 %% Create table results about desired start and end shapes
 shape_counter = 1;
 sort_uc = sort(desired.start.uc);
@@ -123,11 +130,25 @@ for idx = 1:length(desired.start)
    for red = desired.red(desired.red.uc < columns*.5)
     if (shape.uc == red.uc)
         fprintf('colour : red, ')
+        for work_shape = red_blobs
+            if abs(work_shape - shape.area) < 100
+                if Circularity(work_shape) == Circularity(shape)
+                     worksheet_shape = work_shape;
+                end
+            end
+       end
     end
    end
    for green = desired.green(desired.green.uc < columns*.5)
        if (shape.uc == green.uc)
         fprintf('colour : green, ')
+       for work_shape = green_blobs
+            if abs(work_shape - shape.area) < 100
+                if Circularity(work_shape) == Circularity(shape)
+                     worksheet_shape = work_shape;
+                end
+            end
+       end
        end
    end
    %print the size
@@ -136,6 +157,8 @@ for idx = 1:length(desired.start)
    else
        fprintf('size : small,')
    end
+   %print the real world coordinates
+   
    %plot box and move to next line
    fprintf('\n')
    shape_counter = shape_counter+1;
@@ -160,6 +183,7 @@ for idx = 1:length(desired.start)
    for red = desired.red(desired.red.uc > columns*.5)
     if (shape.uc == red.uc)
         fprintf('colour : red, ')
+        
     end
    end
    for green = desired.green(desired.green.uc > columns*.5)
@@ -173,7 +197,7 @@ for idx = 1:length(desired.start)
    else
        fprintf('size : small,')
    end
-   
+   %print real world coordinates of shape
    %plot box and move to next line
    fprintf('\n')
    shape_counter = shape_counter+1;
