@@ -9,7 +9,7 @@ end_vectors = zeros(3,1,3);
 colour_thershold = .7;
 robot_frame_x = 100;
 robot_frame_y = 290;
-block_height = 30;
+block_height = 25;
 %% Process given image to find the related size and color of starting and ending blobs
 imWork = imread(worksheet_address);
 %dimensions of image
@@ -197,7 +197,7 @@ for idx = 1:length(desired.start)
        case 2
            fprintf('SHAPE : square\n')
        case 3
-           fprintf('SHAPE : circle\n')
+           fprintf('SHAPE : triangle\n')
    end   
    %print the colour
    for red = desired.red(desired.red.uc > columns*.5)
