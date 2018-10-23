@@ -29,6 +29,7 @@ classdef Orion5 < handle
     
     %% Public Methods
     methods
+        
         %% Constructor
         function obj = Orion5()
             warning off backtrace
@@ -55,6 +56,9 @@ classdef Orion5 < handle
             obj.tmr = timer('Period', 0.5, 'Name', 'Orion5KeepAlive', 'ExecutionMode', 'fixedSpacing', 'TimerFcn', @obj.keepAliveFcn);
             start(obj.tmr);
             
+            % ADDED BY SAM2 AND LINDSEY2 - SET CORRECT GRIPPER LIMITS
+            obj.setVar(obj.CLAW, 'misc variables', 'ccwAngleLimit', 1080)
+
             pause(1);
             disp('Orion5.m: Ready');
             
@@ -93,6 +97,11 @@ classdef Orion5 < handle
             if ~all(size(positions) == [1 5])
                 error('Orion5.m: setAllJointsPosition requires an array of length 5');
             end
+            if positions(obj.CLAW+1) > 359
+                positions(obj.CLAW+1) = 359;
+            elseif positions(obj.CLAW+1) < 70
+                positions(obj.CLAW+1) = 70;
+            end
             positions = wrapTo360(positions);
             obj.setVar(0, 'posControl', '', positions);
         end
@@ -113,6 +122,11 @@ classdef Orion5 < handle
         end
         
         function setJointPosition(obj, jointID, pos)
+            if jointID == obj.CLAW && pos > 359
+                pos = 359;
+            elseif jointID == obj.CLAW && pos < 70
+                pos = 70;
+            end
             pos = wrapTo360(pos);
         	obj.setVar(jointID, 'control variables', 'goalPosition', pos);
         end
@@ -186,7 +200,7 @@ classdef Orion5 < handle
     end
     
     %% Private Methods
-    methods (Access = 'private')
+    methods (Access = 'public')
         function data = read(obj)
             while obj.locked
                 pause(0.005);
