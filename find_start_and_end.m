@@ -110,13 +110,17 @@ desired.end(end+1:end+length(temp_regions)) = temp_regions;
 %% Create Homography matrix to find real world measurements
 %find blue blobs on the worksheet
 blue_blobs = iblobs(Chrome_Img(:,:,3)>colour_thershold,'boundary','area',[50,10000]);
-% idisp(worksheet)
+idisp(worksheet)
 % for i = 1:length(blue_blobs)
 %     blue_blobs(i).plot_box('r')
 %     pause
 % end
 %work out homography matrix
-H = calc_hom(blue_blobs);
+[uc_max,vc_max,~] = size(worksheet);
+disp(uc_max)
+disp(vc_max)
+pause;
+H = calc_hom(blue_blobs,uc_max,vc_max);
 %% Create table results about desired start and end shapes
 %Start points
 shape_counter = 1;
@@ -262,5 +266,7 @@ for idx = 1:length(desired.start)
    shape_counter = shape_counter+1;
    pause;
 end
+end_vectors(2,:,:) = end_vectors(2,:,:) * -1;
+start_vectors(2,:,:) = start_vectors(2,:,:) *-1;
 end
 

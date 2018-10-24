@@ -1,4 +1,4 @@
-function H = calc_hom(BlueBlobs)
+function H = calc_hom(BlueBlobs,uc_max,vc_max)
     %Q = [20 380; 200 380; 380 380; 20 200; 200 200; 380 200; 20 20; 200 20; 380 20];
     %Q = [345 560;345 290;345 20;183 560;182 290;183 20;20 290;20 560;20 20];
     %Q = [346 560.5;346 290.5;346 19.5;184 560.5;184 290.5;184 19.5;20 290.5;20 560.5;20 19.5];
@@ -8,8 +8,8 @@ function H = calc_hom(BlueBlobs)
     
     for i = 1:length(BlueBlobs)
         %get the centroids of each blue blob
-        Pb(1, i) = BlueBlobs(i).uc;
-        Pb(2, i) = BlueBlobs(i).vc;
+        Pb(1, i) = uc_max - BlueBlobs(i).uc;
+        Pb(2, i) = vc_max - BlueBlobs(i).vc;
         
         %test matching blobs to Q points
 %         BlueBlobs(i).plot_box('y')
