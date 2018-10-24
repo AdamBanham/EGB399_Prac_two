@@ -172,9 +172,8 @@ for idx = 1:length(desired.start)
    fprintf('\n')
    shape.plot_box('y')
    %store in end vector with respect to the robot work frame
-   start_vectors(1,1,shape_counter) = q(2)-robot_frame_y;
-   start_vectors(1,1,shape_counter) =  (start_vectors(1,1,shape_counter)) - 20;
-   start_vectors(2,1,shape_counter) = q(1)-robot_frame_x;
+   start_vectors(1,1,shape_counter) = (q(2)-robot_frame_y)*.9;
+   start_vectors(2,1,shape_counter) = (q(1)-robot_frame_x)*.9;
    start_vectors(3,1,shape_counter) = block_height;
    fprintf('In relation to robot frame, real world coordinates (x,y) : %fmm , %fmm\n', ...
        start_vectors(1,1,shape_counter),...
@@ -241,8 +240,8 @@ for idx = 1:length(desired.start)
    fprintf('\n')
    shape.plot_box('y')
    %store in end vector with respect to the robot work frame
-   end_vectors(1,1,shape_counter-3) = q(2)-robot_frame_y;
-   end_vectors(2,1,shape_counter-3) = q(1)-robot_frame_x;
+   end_vectors(1,1,shape_counter-3) = (q(2)-robot_frame_y)*.9;
+   end_vectors(2,1,shape_counter-3) = (q(1)-robot_frame_x)*.9;
    end_vectors(1,1,shape_counter-3)=  (end_vectors(1,1,shape_counter-3)) - 20;
 %    if(end_vectors(1,1,shape_counter-3)) > 0 
 %        (end_vectors(1,1,shape_counter-3))=  (end_vectors(1,1,shape_counter-3)) + 20
