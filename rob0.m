@@ -1,4 +1,7 @@
-function [target] = rob0(x, y, z)
+function [target] = rob0(pos)
+x = pos(0);
+y = pos(1);
+z = pos(2);
 
 r = 30.309;
 h = 53;
@@ -27,4 +30,4 @@ target(1) = rad2deg(-theta1);
 target(2) = rad2deg(theta2);
 target(3) = rad2deg(theta3);
 target(4) = rad2deg(theta4);
-target(5) = 280;
+target(5) = 300;
