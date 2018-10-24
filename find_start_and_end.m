@@ -240,8 +240,8 @@ for idx = 1:length(desired.start)
    fprintf('\n')
    shape.plot_box('y')
    %store in end vector with respect to the robot work frame
-   end_vectors(1,1,shape_counter-3) = q(1)-robot_frame_x;
-   end_vectors(2,1,shape_counter-3) = q(2)-robot_frame_y;
+   end_vectors(1,1,shape_counter-3) = robot_frame_y - q(1);
+   end_vectors(2,1,shape_counter-3) = q(2)-robot_frame_x;
    end_vectors(3,1,shape_counter-3) = block_height;
    fprintf('In relation to robot frame, real world coordinates (x,y) : %fmm , %fmm\n', ...
        end_vectors(1,1,shape_counter-3),...
