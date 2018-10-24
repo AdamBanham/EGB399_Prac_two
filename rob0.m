@@ -1,7 +1,7 @@
 function [target] = rob0(pos)
-x = pos(0);
-y = pos(1);
-z = pos(2);
+x = pos(1);
+y = pos(2);
+z = pos(3);
 
 r = 30.309;
 h = 53;
