@@ -252,7 +252,7 @@ for idx = 1:length(desired.start)
    %store in end vector with respect to the robot work frame
    end_vectors(1,1,shape_counter-3) = (q(2)-robot_frame_y)*.9;
    end_vectors(2,1,shape_counter-3) = (q(1)-robot_frame_x)*.9;
-   end_vectors(1,1,shape_counter-3)=  (end_vectors(1,1,shape_counter-3)) - 20;
+%   end_vectors(1,1,shape_counter-3)=  (end_vectors(1,1,shape_counter-3)) - 20;
 %    if(end_vectors(1,1,shape_counter-3)) > 0 
 %        (end_vectors(1,1,shape_counter-3))=  (end_vectors(1,1,shape_counter-3)) + 20
 %    elseif((end_vectors(1,1,shape_counter-3)) <0
