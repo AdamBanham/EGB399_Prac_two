@@ -111,6 +111,10 @@ desired.end(end+1:end+length(temp_regions)) = temp_regions;
 %find blue blobs on the worksheet
 blue_blobs = iblobs(Chrome_Img(:,:,3)>colour_thershold,'boundary','area',[50,10000]);
 % idisp(worksheet)
+% for i = 1:length(blue_blobs)
+%     blue_blobs(i).plot_box('r')
+%     pause
+% end
 %work out homography matrix
 H = calc_hom(blue_blobs);
 %% Create table results about desired start and end shapes
@@ -166,6 +170,8 @@ for idx = 1:length(desired.start)
    end
    %print the real world coordinates
    p = [worksheet_shape.uc worksheet_shape.vc];
+   disp(p')
+   disp(H);
    q = homtrans(H,p');
    fprintf('real world coordinates (x,y) : %fmm , %fmm', q(1) , q(2))
    %plot box and move to next line

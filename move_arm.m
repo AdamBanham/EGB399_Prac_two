@@ -1,7 +1,11 @@
 function  move_arm(target)
-Orion = Orion5();
-%moves arm into the target position safetly 
 delay = 2;
+
+pause(3*delay)
+
+Orion = Orion5();
+pause(delay)
+%moves arm into the target position safetly 
 %move arm back out of the space.
 Orion.setJointPosition(1,110)
 pause(delay)
@@ -21,5 +25,6 @@ pause(delay)
 Orion.setJointPosition(3,target(4))
 pause(delay)
 Orion.stop();
+pause(3*delay)
 end
 
