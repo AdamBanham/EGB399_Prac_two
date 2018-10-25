@@ -6,7 +6,7 @@ function [start_vectors,end_vectors] = find_start_and_end(worksheet_address)
 %   end_vector of the same size.
 start_vectors = zeros(3,1,3);
 end_vectors = zeros(3,1,3);
-colour_thershold = .7;
+colour_thershold = .5;
 robot_frame_x = 100;
 robot_frame_y = 290;
 block_height = 53;
@@ -34,7 +34,7 @@ shapes = Circularitys(iblobs( ((Chrome_Img(:,:,1)>colour_thershold)+Chrome_Img(:
                              'area',[50,10000],'boundary'));
 mean_size(1) = mean(shapes.circle.area);
 mean_size(2) = mean(shapes.square.area);
-mean_size(3) = mean(shapes.triangle.area);
+mean_size(3) = mean(shapes.triangle.area) * .8;
 
 %% test section A - check that shapes are only detected
 % idisp(Chrome_Img(:,:,2))
