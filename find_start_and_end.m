@@ -111,9 +111,9 @@ desired.end(end+1:end+length(temp_regions)) = temp_regions;
 %find blue blobs on the worksheet
 blue_blobs = iblobs(Chrome_Img(:,:,3)>colour_thershold,'boundary','area',[50,10000]);
 %workout the highest point for the cut off
-high_point = min(blue_blobs.vc)*.95;
+high_point = min(blue_blobs.vc)*.75;
 %workout the lowest point for the cut off
-low_point = max(blue_blobs.vc)*1.05;
+low_point = max(blue_blobs.vc)*1.1;
 refactored_chrome_blue = Chrome_Img(high_point:low_point,:,3);
 blue_blobs = iblobs(refactored_chrome_blue>colour_thershold,'boundary','area',[50,10000]);
 % idisp(refactored_chrome_blue)
@@ -131,6 +131,10 @@ blue_blobs = iblobs(refactored_chrome_blue>colour_thershold,'boundary','area',[5
 % blue_blobs.plot_box('y')
 % pause;
 %% Homography matrix compute
+%sort blue blobs into a constant format
+blue_blobs = sort_blue(blue_blobs);
+
+
 H = calc_hom(blue_blobs,uc_max,vc_max);
 %reorganize red blobs and green blobs so their uc,vc are 
 refactored_chrome_red = Chrome_Img(high_point:low_point,:,2) > colour_thershold;
@@ -140,6 +144,13 @@ red_blobs = iblobs(refactored_chrome_red,'area',[50,10000],'boundary');
 %make a template image
 worksheet = worksheet(high_point:low_point,:,:);
 
+%% Test section for blue_blobs arrangement
+% idisp(refactored_chrome_blue)
+% for i = 1:length(blue_blobs)
+%     blue_blobs(i).plot_box('y')
+%     pause;
+% end
+
 %% Create table results about desired start and end shapes
 %Start points
 shape_counter = 1;
@@ -147,7 +158,7 @@ sort_uc = sort(desired.start.uc);
 for idx = 1:length(desired.start)
    disp('*------------------------------*')
    shape = desired.start(desired.start.uc == sort_uc(shape_counter));
-   idisp(start_end_shapes);
+%    idisp(start_end_shapes);
    fprintf('start point shape: %d\n',shape_counter)
    %print the shape
    switch (Circularity(shape))
@@ -233,9 +244,6 @@ for idx = 1:length(desired.start)
 %    disp(p')
 %    disp(H);
    q = homtrans(H,p');
-   %flip the real world points so that 0,0 in the oppposite direction
-   %x coordinates seems to be working with expectations but y isn't
-    q(2) = 560 - q(2);
    fprintf('real world coordinates (x,y) : %fmm , %fmm', q(1) , q(2))
    %plot box and move to next line
    fprintf('\n')
@@ -257,7 +265,7 @@ sort_uc = sort(desired.end.uc);
 for idx = 1:length(desired.start)
    disp('*------------------------------*')
    shape = desired.end(desired.end.uc == sort_uc(shape_counter-3));
-   idisp(start_end_shapes);
+%    idisp(start_end_shapes);
    fprintf('finish point shape: %d \n',shape_counter-3)
    %print the shape
    switch (Circularity(shape))
@@ -331,9 +339,6 @@ for idx = 1:length(desired.start)
    idisp(worksheet)
    worksheet_shape.plot_box('k')
    q = homtrans(H,p');
-   %flip the real world points so that 0,0 in the oppposite direction
-   %x coordinates seems to be working with expectations but y isn't
-   q(2) = 560 - q(2);
    fprintf('real world coordinates (x,y) : %fmm , %fmm', q(1) , q(2))
    %plot box and move to next line
    fprintf('\n')
