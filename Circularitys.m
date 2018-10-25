@@ -5,10 +5,10 @@ function [ Shapes ] = Circularitys( blobs )
 %   outputs a Shapes structure with square , triangle , circle set
 Shapes = struct;
 %find circles
-circleIndex = find(blobs.circularity > .875);
+circleIndex = find(blobs.circularity > .9);
 Circle = blobs(circleIndex);
 %find squares
-squareIndex = find((blobs.circularity < .875) & (blobs.circularity > .71) );
+squareIndex = find((blobs.circularity < .9) & (blobs.circularity > .71) );
 Square = blobs(squareIndex);
 %find triangles
 triIndex = find(blobs.circularity < .71 & blobs.circularity > .6);
