@@ -64,8 +64,8 @@ mean_size(3) = mean(shapes.triangle.area) * .8;
 % pause;
 %% find similar shapes and store choices
 Chrome_start_shapes = Chromactiy( start_end_shapes , colour_thershold );
-desired.green = iblobs(Chrome_start_shapes(:,:,1)>colour_thershold,'boundary','area',[50,10000]);  
-desired.red = iblobs(Chrome_start_shapes(:,:,2)>colour_thershold,'boundary','area',[50,10000]);
+desired.green = iblobs(Chrome_start_shapes(:,:,1)>colour_thershold,'boundary','area',[250,10000]);  
+desired.red = iblobs(Chrome_start_shapes(:,:,2)>colour_thershold,'boundary','area',[250,10000]);
 
 %% Test section B - check sizing detection works
 % idisp(start_end_shapes);
