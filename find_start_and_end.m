@@ -16,9 +16,11 @@ imWork = imread(worksheet_address);
 [rows,columns] = size(imWork(:,:,1));
 %the desired starting and ending points will be in the top 20% of the
 %picture
-img_cutoff = rows*.25;
+img_cutoff = rows*.22;
 %spilt worksheet into start_end_vectors and worksheet
 worksheet = imWork(img_cutoff:end,:,:);
+idisp(worksheet)
+pause;
 start_end_shapes = imWork(1:img_cutoff,:,:);
 %get all green shapes and red shapes from worksheet
 % then clear all noise pixels , under thershold
