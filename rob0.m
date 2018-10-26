@@ -17,7 +17,7 @@ theta1 = atan2(y, x);
 if r > x && x > 0
     %d1 = sqrt((r + x)^2 + y^2);
     d1 = sqrt((r - x)^2 + y^2);
-elseif r > x && x < 0
+elseif r > abs(x) && x < 0
     d1 = sqrt((r+abs(x))^2 + y^2);
 elseif x > r
     d1 = sqrt((x-r)^2+y^2);
@@ -25,7 +25,9 @@ elseif x == 0
     d1 = sqrt(r^2 + y^2);
 elseif x < 0 && abs(x) > r
     d1 = sqrt((x+r)^2 + y^2);
+    disp("good things happening")
 end
+d1 = d1 + 3;
 d2 = sqrt(d1^2 + l4^2);
 thetab = acos((l2^2 - d2^2 - l3^2)/(-2*d2*l3));
 thetak = (acos((d2^2 - l2^2 - l3^2)/(-2*l2*l3)));
@@ -33,7 +35,7 @@ thetak = (acos((d2^2 - l2^2 - l3^2)/(-2*l2*l3)));
 thetal = acos((l3^2 - d2^2 - l2^2)/(-2*d2*l2));
 %thetak = pi-thetal-thetab;
 thetap = acos(d1/d2);
-thetaq = atan(10/d1);
+thetaq = atan(20/d1);
 disp(rad2deg(thetal));
 disp(rad2deg(thetap));
 
