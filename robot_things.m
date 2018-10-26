@@ -11,6 +11,9 @@
 for i = 1:3
     orion = Orion5();
     orion.setJointPosition(4, 300);
+    %if x < 0
+    %calculate vector from origin to end effector
+    %translate 
     target = rob0(start(:, :, i));
     orion.stop()
     move_arm(target);

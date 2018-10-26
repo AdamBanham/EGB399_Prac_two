@@ -1,4 +1,5 @@
 function [target] = rob0(pos)
+
 x = pos(1);
 y = pos(2);
 z = pos(3);
@@ -22,6 +23,8 @@ elseif x > r
     d1 = sqrt((x-r)^2+y^2);
 elseif x == 0
     d1 = sqrt(r^2 + y^2);
+elseif x < 0 && abs(x) > r
+    d1 = sqrt((x+r)^2 + y^2);
 end
 d2 = sqrt(d1^2 + l4^2);
 thetab = acos((l2^2 - d2^2 - l3^2)/(-2*d2*l3));
